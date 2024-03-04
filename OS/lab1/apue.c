@@ -11,6 +11,7 @@ static long pathmax = PATH_MAX;
 #else
 static long pathmax = 0;
 #endif
+static long flag = 0;
 static long posix_version = 0;
 static long xsi_version = 0;
 #define PATH_MAX_GUESS 1024
@@ -33,6 +34,7 @@ char *path_alloc(size_t *sizep)
 			pathmax++;
 		}
 	}
+	pathmax--;
 	if ((posix_version < 200112L) && (xsi_version < 4))
 		size = pathmax + 1;
 	else
@@ -41,6 +43,10 @@ char *path_alloc(size_t *sizep)
 		err_sys("malloc");
 	if (sizep != NULL)
 		*sizep = size;
+	if (!flag) {
+		flag = 1;
+		printf("size of pathname: %ld\n", size);
+	}
 	return ptr;
 }
 void err_doit(int errnoflag,int error,const char *fmt,va_list ap)
